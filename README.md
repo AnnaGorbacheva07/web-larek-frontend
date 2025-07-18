@@ -376,3 +376,6 @@ _События, возникающие при взаимодействии по
 - order:open - открытие окна оформления заказа
 - ${form}:submit - отправка формы со значениями полей
 - ${form}.${field}:change - изменение поля в форме
+
+
+https://github.com/AnnaGorbacheva07/web-larek-frontend
