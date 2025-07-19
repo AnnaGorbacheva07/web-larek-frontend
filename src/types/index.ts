@@ -1,39 +1,27 @@
 import { EventEmitter } from '../components/base/events';
 //СЛОЙ ДАННЫХ
 
-// Типы, относящиеся к товару
 // Описание товара (из API)
 export interface IProduct {
 	id: string;
-	description?: string;
+	description: string;
 	image: string;
 	title: string;
 	category: string;
 	price: number | null;
 }
 
-//Список товаров (из API)
-export interface IProductsList {
-	total: number;
-	items: IProduct[];
-}
+// Интерфейс для описания покупателя (переделала по видео для исправления в классе заказа(переименован на класс Покупатель))
 
-// Типы для оформления заказа
-
-//  Информация об оплате и доставке
-export interface IBuyerData {
+export interface IBuyer {
 	payment: 'cash' | 'online' | '';
 	address: string;
-}
-
-// Контактные данные покупателя
-export interface IBuyerContacts {
 	email: string;
 	phone: string;
 }
 
 // Заказ, отправляемый из корзины на сервер
-export interface IOrder extends IBuyerData, IBuyerContacts {
+export interface IOrder extends IBuyer {
 	total: number;
 	items: string[]; // массив id товаров
 }
@@ -99,13 +87,4 @@ export interface IFormContactsData {
 	email: HTMLInputElement;
 	phone: HTMLInputElement;
 }
-/*МОЖЕТ БЫТЬ НУЖЕН?
-//Интерфейс для конструктора
-export interface IViewСonstructor {
-	new (container: HTMLElement, events?: EventEmitter): IView; //на входе контейнер,в который будем выводить
-}
-//Интерфейс для класса отображения
-export interface IView {
-	render(data?: object): HTMLElement; //устанавливаем данные и возвращаем контейнер
-}
-*/
+

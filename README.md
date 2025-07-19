@@ -52,7 +52,7 @@ yarn build
 ```
 export interface IProduct {
 id: string;
-description?: string;
+description: string;
 image: string;
 title: string;
 category: string;
@@ -60,52 +60,36 @@ price: number | null;
 }
 ```
 
-Список товаров. Используется для учёта всего списка товаров.
+Покупатель. Используется для учёта данных покупателя при оформлении заказа.
 
 ```
-export interface IProductsList {
-total: number;
-items: IProduct[];
+export interface IBuyer {
+	payment: 'cash' | 'online' | '';
+	address: string;
+	email: string;
+	phone: string;
 }
-```
-
-Оформление заказа
-
-Покупатель. Используется для учёта данных покупателя при оформлении заказа.\
-Информация об оплате и доставке
-
-```
-export interface IBuyerData {
-payment: 'cash' | 'online' | '';
-address: string;
-}
-```
-
-Контактные данные покупателя
-
-```
-export interface IBuyerContacts {
-email: string;
-phone: string;
-}
-```
 
 Заказ, отправляемый из корзины на сервер
 
 ```
-export interface IOrder extends IBuyerData, IBuyerContacts {
+
+export interface IOrder extends IBuyer {
 total: number;
 items: string[]; // массив id товаров
 }
+
 ```
 
 Ответ сервера о заказе
 
 ```
+
 export interface IOrderResult {
 id: string;
 total: number;
 }
+
 ```
 
 ## Архитектура приложения
@@ -128,7 +112,7 @@ total: number;
 
 #### Класс EventEmitter
 
-Брокер событий позволяет отправлять события и подписываться на события, происходящие в системе. Класс используется в презентере для обработки событий и в слоях приложения для генерации событий.  
+Брокер событий позволяет отправлять события и подписываться на события, происходящие в системе. Класс используется в презентере для обработки событий и в слоях приложения для генерации событий.
 Основные методы, реализуемые классом описаны интерфейсом `IEvents`:
 
 - `on` - подписка на событие
@@ -143,8 +127,8 @@ total: number;
 Конструктор класса принимает инстант брокера событий\
 В полях класса хранятся следующие данные:
 
-- \_products: IProduct[] - массив объектов карточек товаров.
-- \_preview: string | null - id товара, выбранного для просмотра в модальной окне.
+- products: IProduct[] - массив объектов карточек товаров.
+- preview: string | null - id товара, выбранного для просмотра в модальной окне.
 - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных.
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
@@ -160,7 +144,7 @@ total: number;
 Конструктор класса принимает инстант брокера событий\
 В полях класса хранятся следующие данные:
 
-- \_items:Map<string,number> - карта товаров в корзине (ключ — ID товара, значение — количество).
+- items: string[] - массив id товаров.
 - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных.
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
@@ -173,21 +157,21 @@ total: number;
   -hasItem(id: string): boolean - узнать наличие товара
   -getTotal(): number-вывести общую стоимомть корзины.
 
-#### Класс OrderModel
+#### Класс BuyerModel
 
-Класс отвечает за хранение и логику работы при оформлении заказа.\
+Класс отвечает за хранение и логику работы с данными покупателя при оформлении заказа. Осуществляет валидацию.\
 Конструктор класса принимает инстант брокера событий\
 В полях класса хранятся следующие данные:
 
-- \_order: IOrder-данные заказа.
+- buyer: IBuyer-данные, введенные покупателем.
 - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных.
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
 
-- setOrderInfo(order: IOrder):void- сохранение заказа для его отправки.
-- validationOrder(data: Record<keyof IOrder, string>):boolean-проверка валидации полей формы при оформлении заказа.
-  -getOrder(): IOrder | null - получение данных заказа
-- clearOrder(): void- очистить заказ.
+- setData(data: keyof IBuyer, value: string):void- сохранение(обновление) данных в момент заполнения данных покупателем.
+- validationData(data: Record<keyof IBuyer, string>):boolean-проверка валидации полей формы при оформлении заказа.
+-getBuyerData(): IOrder- получение данных заказа
+- clear(): void- очистить данные заказа.
 
 ### Классы представления
 
@@ -201,11 +185,11 @@ total: number;
 Конструктор принимает на входе контейнер,в который будем выводить данные и экземпляр класса `EventEmitter` для возможности инициации событий.
 
 Поля класса:
-\_counterElement: HTMLElement – счётчик товаров в корзине
-\_basketButton: HTMLElement – кнопка корзины
+- counterElement: HTMLElement – счётчик товаров в корзине
+- basketButton: HTMLElement – кнопка корзины
 
 Так же класс предоставляет мметод для взаимодействия с данными счётчика.
--set counter(value: number) - для работы счетчика корзины
+- set counter(value: number) - для работы счетчика корзины
 
 #### Класс Gallery
 
@@ -214,7 +198,7 @@ total: number;
 Конструктор: (container: HTMLElement, events: IEvents). Конструктор принимает на входе контейнер,в который будем выводить данные и экземпляр класса `EventEmitter` для возможности инициации событий.
 
 Поля класса:
-\_catalog: HTMLElement – каталог с карточками товаров
+- catalog: HTMLElement – каталог с карточками товаров
 
 Так же класс предоставляет метод для взаимодействия с этими данными.
 -set catalog(items: HTMLElement[]) - для отображения карточек с товарами.
@@ -227,8 +211,8 @@ total: number;
 
 Поля класса
 
-- \_content: HTMLElement
-- \_closeButton: HTMLButtonElement
+- content: HTMLElement
+- closeButton: HTMLButtonElement
   Предоставляет методы `open` и `close` для управления отображением модального окна.
   Устанавливает слушатели на клавиатуру, для закрытия модального окна по Esc, на клик в оверлей и кнопку-крестик для закрытия попапа.
   А также использует метод set content(value: HTMLElement) для отображения содержимого модального окна.
@@ -240,8 +224,8 @@ total: number;
 Конструктор: (container: HTMLElement, actions: ISuccessActions).Конструктор принимает на входе контейнер,в который будем выводить данные и параметр с возможными действиями.
 
 Поля класса:
--\_successButton: HTMLButtonElement – кнопка "За новыми покупками"
--\_total: HTMLElement– общая сумма заказа
+- successButton: HTMLButtonElement – кнопка "За новыми покупками"
+- total: HTMLElement– общая сумма заказа
 
 Методы:
 
@@ -253,8 +237,8 @@ total: number;
 Включает в себя название и стоимость.
 Конструктор: (container: HTMLElement, actions?: ICardActions). Конструктор принимает на входе контейнер,в который будем выводить данные и параметр с возможными действиями.
 Поля класса:
-\_title: HTMLElement -название товара
-\_price: HTMLElement- цена товара
+- title: HTMLElement -название товара
+- price: HTMLElement- цена товара
 
 Так же класс предоставляет метод для взаимодействия с этими данными.
 
@@ -266,9 +250,9 @@ total: number;
 Конструктор: (container: HTMLElement, actions?: ICardActions). Конструктор принимает на входе контейнер,в который будем выводить данные и параметр с возможными действиями.
 
 Поля класса:
-\_image: HTMLImageElement - картинка товара
-\_category: HTMLElement - категория товара
-\_button: HTMLButtonElement -кнопка для тогоБ чтобы открыть карточку в предварительный просмотр.
+- image: HTMLImageElement - картинка товара
+- category: HTMLElement - категория товара
+- button: HTMLButtonElement -кнопка для тогоБ чтобы открыть карточку в предварительный просмотр.
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
 
@@ -280,10 +264,10 @@ total: number;
 Конструктор: (container: HTMLElement, actions?: ICardActions). Конструктор принимает на входе контейнер,в который будем выводить данные и параметр с возможными действиями.
 
 Поля класса:
-\_image: HTMLImageElement - картинка товара
-\_category: HTMLElement - категория товара
-\_description: HTMLElement - подробное описание товара
-\_button: HTMLButtonElement -кнопка «Купить» или «Удалить из корзины».
+- image: HTMLImageElement - картинка товара
+- category: HTMLElement - категория товара
+- description: HTMLElement - подробное описание товара
+- button: HTMLButtonElement -кнопка «Купить» или «Удалить из корзины».
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
 
@@ -295,8 +279,8 @@ total: number;
 Конструктор: (container: HTMLElement, actions?: ICardActions). Конструктор принимает на входе контейнер,в который будем выводить данные и параметр с возможными действиями.
 
 Поля класса:
-\_itemBasket: HTMLElement -порядковый номер товара
-\_button: HTMLButtonElement -кнопка «Удалить».
+- itemBasket: HTMLElement -порядковый номер товара
+- button: HTMLButtonElement -кнопка «Удалить».
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
 
@@ -307,9 +291,9 @@ total: number;
 Реализует отображение списка товаров в корзине, общую стоимость и кнопку «Оформить».
 Конструктор: (container: HTMLElement, events: IEvents).Конструктор принимает на входе контейнер,в который будем выводить данные и экземпляр класса `EventEmitter` для возможности инициации событий.
 Поля класса:
-\_basketlist: HTMLElement – контейнер для товаров корзины
-\_total: HTMLElement – общая сумма заказа
-\_button: HTMLButtonElement – кнопка «Оформить» (button)
+- basketlist: HTMLElement – контейнер для товаров корзины
+- total: HTMLElement – общая сумма заказа
+- button: HTMLButtonElement – кнопка «Оформить» (button)
 Набор методов для взаимодействия с этими данными:
 -set items(items: HTMLElement[])-устанавливает список товаров
 -set total- отображает общую стоимость
@@ -321,8 +305,8 @@ total: number;
 Конструктор (container: HTMLFormElement, events: IEvents) принимает на входе контейнер,в который будем выводить данные и экземпляр класса `EventEmitter` для возможности инициации событий.(container: HTMLFormElement, events: IEvents)
 При сабмите инициирует событие передавая в него объект с данными из полей ввода формы. При изменении данных в полях ввода инициирует событие изменения данных. Предоставляет методы для отображения ошибок и управления активности кнопки.
 Поля класса:
-\_submitButton: HTMLButtonElement - Кнопка подтверждения
-\_errors: Record<string, HTMLElement> - объект хранящий все элементы для вывода ошибок под полями формы с привязкой к атрибуту name инпутов
+- submitButton: HTMLButtonElement - Кнопка подтверждения
+- errors: Record<string, HTMLElement> - объект хранящий все элементы для вывода ошибок под полями формы с привязкой к атрибуту name инпутов
 Методы:
 -inputChange(field: keyof T, value: string)- для инициации события изменений в форме
 
@@ -334,8 +318,8 @@ total: number;
 Расширяет родительский класс Form. Предназначен для реализации формы, содержащей поля выбор оплаты и указания адреса.
 Конструктор (container: HTMLFormElement, events: IEvents) принимает на входе контейнер,в который будем выводить данные и экземпляр класса `EventEmitter` для возможности инициации событий.
 Поля класса:
-\_paymentButtons( HTMLButtonElement[]) – массив кнопок способов оплаты.
-\_addressInput( HTMLInputElement) – поле ввода адреса.
+- paymentButtons( HTMLButtonElement[]) – массив кнопок способов оплаты.
+- addressInput( HTMLInputElement) – поле ввода адреса.
 Испульзуется метод set address(value: string) для установки адреса.
 
 #### Класс FormContacts
@@ -343,8 +327,8 @@ total: number;
 Расширяет родительский класс Form. Предназначен для реализации формы, содержащей поля для контактных данных(почта,телефон)
 Конструктор (container: HTMLFormElement, events: IEvents) принимает на входе контейнер,в который будем выводить данные и экземпляр класса `EventEmitter` для возможности инициации событий.
 Поля класса:
-\_emailInput: HTMLInputElement – поле для email
-\_phoneInput: HTMLInputElement– поле для телефона
+- emailInput: HTMLInputElement – поле для email
+- phoneInput: HTMLInputElement– поле для телефона
 Испульзуется метод set email(value: string) и set phone(value: string) для установки контактных данных.
 
 ### Слой коммуникации
@@ -379,3 +363,4 @@ _События, возникающие при взаимодействии по
 
 
 https://github.com/AnnaGorbacheva07/web-larek-frontend
+```
