@@ -134,9 +134,10 @@ total: number;
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
 
 - getProducts(): IProduct[] | undefined- метод для получения списка товаров
-- setProductList(products: IProduct[])- метод для сохранения массива товаров
-- getSelectedProduct(): IProduct | undefined- метод для получения выбранной карточки
-- setProduct(productId: string): void -метод для сохранения выбранной карточки
+- setProducts(products: IProduct[])- метод для сохранения массива товаров
+- getProductId (productId:string): IProduct | undefined- метод для получения выбранной карточки
+- setPreview (product: IProduct): void -метод для установки выбранной карточки для превью
+- getPreview (): IProduct | undefined -метод для превью карточки
 
 #### Класс BasketModel
 
@@ -242,7 +243,7 @@ total: number;
 
 Так же класс предоставляет метод для взаимодействия с этими данными.
 
-- set ICardProduct (cardData: ICard): void - заполняет атрибуты элементов карточки данными.
+- set CardProduct (cardData: ICard): void - заполняет атрибуты элементов карточки данными.
 
 #### Класс CardGallery
 

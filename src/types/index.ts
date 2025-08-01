@@ -1,3 +1,4 @@
+
 import { EventEmitter } from '../components/base/events';
 //СЛОЙ ДАННЫХ
 
@@ -10,14 +11,31 @@ export interface IProduct {
 	category: string;
 	price: number | null;
 }
+//Интерфейс для модели данных 
+
+export interface IProductsModel {
+    getProducts(): IProduct[] | undefined;
+    setProducts(products: IProduct[]): void;
+    getProductById(productId: string): IProduct | undefined;
+    setPreview (product: IProduct): void;
+	getPreview(): IProduct | null;
+}
 
 // Интерфейс для описания покупателя (переделала по видео для исправления в классе заказа(переименован на класс Покупатель))
-
+export type PaymentMethod = 'cash' | 'online';
 export interface IBuyer {
-	payment: 'cash' | 'online' | '';
+	payment: PaymentMethod | '';
 	address: string;
 	email: string;
 	phone: string;
+}
+
+// Интерфейс для модели покупателя
+export interface IBuyerModel {
+    setData(data: keyof IBuyer, value: string): void;
+    validationData(data: Record<keyof IBuyer, string>): boolean;
+    getBuyerData(): IOrder;
+    clear(): void;
 }
 
 // Заказ, отправляемый из корзины на сервер
@@ -33,10 +51,22 @@ export interface IOrderResult {
 // Ошибки формы
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
+//Интерфейс модели корзины
+
+export interface IBasketModel {
+	  getItems(): Map<string, IProduct>; //получить список товаров
+	  getTotalCount(): number;//получить количество товаров в корзине
+	  hasItem(id: string): boolean; //узнать наличие товара
+	  getTotal(): number; //вывести общую стоимомть корзины.
+	  addProduct(product: IProduct): void //добавить товар в корзину
+	  removeProduct(id: string): void; //удалить 
+	  clear(): void; //очищение всей корзины
+	}
+
 //ТИПЫ ПРЕДСТАВЛЕНИЯ
 
 //Интерфейс для класса Header
-interface IHeader {
+export interface IHeader {
 	counter: number;
 }
 
@@ -49,6 +79,7 @@ export interface IGallery {
 export interface IModalView {
 	content: HTMLElement;
 }
+
 
 // Интерфейс окна «Заказ оформлен»
 export interface ISuccess {
@@ -81,10 +112,19 @@ export interface IForm {
 	errors: string[];
 }
 export interface IFormOrderData {
+	payment: PaymentMethod;
 	address: HTMLInputElement;
 }
 export interface IFormContactsData {
 	email: HTMLInputElement;
 	phone: HTMLInputElement;
 }
-
+//Интерфейс для апи
+export interface ILarekAPI {
+	// Получить каталог товаров
+	getProducts(): Promise<IProduct[]>;
+	//Получить товар по id 
+	getProduct(id: string): Promise<IProduct>;
+	//Создать заказ
+	createOrder(order: IOrder): Promise<IOrderResult>;
+}
