@@ -1,8 +1,8 @@
-import { IModalView } from "../../types"
+import { IModal, IModalView } from "../../types"
 import { EventEmitter, IEvents } from "../base/events"
 import { Component } from "../component"
 
-  export class Modal extends Component<IModalView> {
+  export class Modal extends Component<IModalView> implements IModal {
     protected events: EventEmitter;
     protected _content: HTMLElement;
     protected _closeButton: HTMLButtonElement;
@@ -54,6 +54,11 @@ this._closeButton.addEventListener('click', () =>
     // Метод для получения содержимого
     get content(): HTMLElement {
         return this._content;
+    }
+    render(data: IModalView): HTMLElement {
+        super.render(data);
+		this.open();
+		return this.container;
     }
 }
       

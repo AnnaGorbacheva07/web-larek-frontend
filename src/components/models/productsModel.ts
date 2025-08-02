@@ -3,9 +3,9 @@ import {IEvents} from "../../components/base/events";
 
 
 export class ProductsModel implements IProductsModel {
-protected _products: IProduct[]= [];
+_products: IProduct[]= [];
 protected _previewId: string | null = null;
-protected events: IEvents;
+ events: IEvents;
 
 constructor (events: IEvents){
     this.events = events;
@@ -17,7 +17,7 @@ getProducts(): IProduct[] | undefined {
 //сохранить массив товаров
 setProducts(products: IProduct[]): void {
     this._products = products;
-    this.events.emit('items:change');
+    this.events.emit('items:change', this._products);
 }
 // получить выбранную карточку по id
 getProductById (productId:string): IProduct | undefined {

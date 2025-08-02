@@ -17,6 +17,8 @@ import { FormContacts } from './components/view/FormContacts';
 import { FormOrder } from './components/view/FormOrder';
 import { SuccessOrder } from './components/view/SuccessOrder';
 import { CardGallery } from './components/view/CardGallery';
+import { PreviewCard } from './components/view/CardPreview';
+import { BasketCard } from './components/view/CardBasket';
 
 const events = new EventEmitter();
 const api = new LarekAPI (CDN_URL, API_URL);
@@ -42,9 +44,9 @@ if (!galleryContainer) {
     throw new Error('Контейнер галереи не найден');
 }
 const modalContainer = document.querySelector('.modal__container') as HTMLElement;
-const basketContainer = document.querySelector('.basket') as HTMLElement;
-const orderContainer = document.querySelector('.order') as HTMLFormElement;;
-const contactsContainer = document.querySelector('.contacts__container') as HTMLFormElement;;
+const basketContainer = cloneTemplate<HTMLElement>(basketTemplate);
+const orderContainer = document.querySelector('.order') as HTMLFormElement;
+const contactsContainer = document.querySelector('.contacts__container') as HTMLFormElement;
 const successContainer = document.querySelector('.success__container') as HTMLElement;
 
 // Экземпляры модели данных
@@ -59,8 +61,8 @@ const gallery = new Gallery(galleryContainer, events);
 const modal = new Modal(modalContainer, events);
 
 // Дополнительные представления
-const basketView = new Basket(basketContainer, events);
-
+const basket = new Basket(basketContainer, events);
+/*
 const orderForm = new FormOrder(orderContainer, events);
 
 const contactsForm = new FormContacts(contactsContainer, events);
@@ -69,11 +71,42 @@ const successView = new SuccessOrder(successContainer, {
 	onClick: () => {
 		modal.close();
 	},
+});*/
+// Обработчик загрузки товаров
+events.on('items:change', (items: IProduct[]) => {
+    console.log(items);
+  gallery.catalog = items.map(item => {
+    const card = new CardGallery(cloneTemplate(cardCatalogTemplate), {
+      onClick: () => {
+        events.emit('card:select', item);
+      }
+    })
+    return card.render(item);
+  })
 });
+// Запускаем загрузку товаров
+api.getProducts()
+    .then(productsModel.setProducts.bind(productsModel))
+    .catch((err) => {
+        console.error('Ошибка загрузки товаров:', err);
+    });
+
+    // Изменения в корзине
+events.on('basket:changed',() => {
+header.counter = basketModel.getTotalCount();
+basket.items =basketModel.getItems
+});
+  
+    // Открыть корзину
+events.on('basket:open', () => {
+	modal.render({
+		content: basket.render(),
+	});
+	});
 
 // Обработчик загрузки товаров
 
-events.on('items:change', (items: IProduct[]) => {
+/*events.on('items:change', (items: IProduct[]) => {
     console.log('Получено товаров:', items.length);
     
     // Создаем массив карточек
@@ -101,14 +134,9 @@ events.on('items:change', (items: IProduct[]) => {
     
     // Присваиваем массив карточек каталогу галереи
     gallery.catalog = cards;
-});
+});*/
 
-// Запускаем загрузку товаров
-api.getProducts()
-    .then(productsModel.setProducts.bind(productsModel))
-    .catch((err) => {
-        console.error('Ошибка загрузки товаров:', err);
-    });
+
 
 /*events.on('items:change', () => {
     // Получаем все товары из модели
@@ -370,10 +398,11 @@ testCard.price = 1000;
 testCard.title='пример названия'
 // Выводим результат в консоль
 console.log('Данные карточки:', testCard.price);
-*/
+*//*
 const testProduct = {
     image: "image1.jpg",
     title: "Товар 1",
     category: "Категория 1",
     price: 1000
 };
+*/

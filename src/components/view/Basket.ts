@@ -1,4 +1,4 @@
-import { IBasket } from "../../types"
+import { IBasket, IProduct } from "../../types"
 import { createElement } from "../../utils/utils"
 import { EventEmitter, IEvents } from "../base/events"
 import { Component } from "../component"
@@ -7,12 +7,12 @@ export class Basket extends Component<IBasket> {
 	protected _basketlist: HTMLElement;
 	protected _total: HTMLElement;
 	protected _button: HTMLButtonElement | null = null;
-protected events: EventEmitter;
+protected events: IEvents;;
 
  
 	constructor(container: HTMLElement, events: IEvents) {
 		super(container);
-this.events = new EventEmitter();
+this.events = events;
 		this._basketlist = this.container.querySelector('.basket__list');
 		this._total = this.container.querySelector('.basket__price');
 		this._button = this.container.querySelector('.basket__button');
@@ -32,7 +32,7 @@ this.events = new EventEmitter();
 	}
 
 	
-	set items(items: HTMLElement[]) {
+	set items(items:HTMLElement[]) {
 		if (items.length) {
 			this._basketlist.replaceChildren(...items);
 		} else {

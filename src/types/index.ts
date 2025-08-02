@@ -79,6 +79,12 @@ export interface IGallery {
 export interface IModalView {
 	content: HTMLElement;
 }
+export interface IModal {
+	content: HTMLElement;
+	open(): void;
+	close(): void;
+	render(data: IModalView): HTMLElement;
+}
 
 
 // Интерфейс окна «Заказ оформлен»

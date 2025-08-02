@@ -5,7 +5,7 @@ import { Component } from "../component"
 
 export class Form<T> extends Component<IForm>{
 	protected _submitButton: HTMLButtonElement | null = null;
- protected _errors:  HTMLElement | null = null;;
+ protected _errors:  HTMLElement | null = null;
  protected events: EventEmitter;
 
  constructor(container: HTMLFormElement, events: IEvents) {
