@@ -72,6 +72,8 @@ const successView = new SuccessOrder(successContainer, {
 		modal.close();
 	},
 });*/
+events.on('modal:open', () => {
+    })
 // Обработчик загрузки товаров
 events.on('items:change', (items: IProduct[]) => {
     console.log(items);
@@ -94,7 +96,39 @@ api.getProducts()
     // Изменения в корзине
 events.on('basket:changed',() => {
 header.counter = basketModel.getTotalCount();
-basket.items =basketModel.getItems
+// Получаем элементы корзины и преобразуем их в массив
+    const itemsArray = Array.from(basketModel.getItems().values());
+    
+    // Преобразуем товары в элементы корзины
+    basket.items = itemsArray.map((item, index) => {
+        const card = new BasketCard(
+            cloneTemplate(cardBasketTemplate),
+            {
+                onClick: () => {
+                    basketModel.removeProduct(item.id);
+                    
+                }
+            }
+        );
+        
+        const element = card.render({
+            id: item.id,
+            title: item.title,
+            price: item.price
+        });
+        
+        // Устанавливаем индекс товара
+        const indexElement = element.querySelector('.basket__item-index');
+        if (indexElement) {
+            indexElement.textContent = String(index + 1);
+        }
+        
+        return element;
+    });
+    
+    // Обновляем общую сумму и состояние кнопки
+    basket.total = basketModel.getTotal();
+    basket.disabledButton = basketModel.getTotalCount() === 0;
 });
   
     // Открыть корзину
@@ -102,6 +136,7 @@ events.on('basket:open', () => {
 	modal.render({
 		content: basket.render(),
 	});
+    modal.open();
 	});
 
 // Обработчик загрузки товаров

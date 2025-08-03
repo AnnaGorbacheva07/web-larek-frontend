@@ -50,11 +50,11 @@ this._closeButton.addEventListener('click', () =>
     set content(value: HTMLElement) {
         this._content.replaceChildren(value);
     }
-
+/*
     // Метод для получения содержимого
     get content(): HTMLElement {
         return this._content;
-    }
+    }*/
     render(data: IModalView): HTMLElement {
         super.render(data);
 		this.open();
