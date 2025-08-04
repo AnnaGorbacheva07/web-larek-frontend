@@ -145,14 +145,16 @@ clear(): void {
         this.events.emit('buyer:data:cleared');
     }}*/
 
+
 export class BuyerModel implements IBuyerModel {
-   //данные, введенные покупателем.
-   protected _buyer: IBuyer = {
+    // Данные, введенные покупателем
+    protected _buyer: IBuyer = {
         payment: null,
         address: '',
         email: '',
         phone: ''
     };
+
     protected _order: IOrder = {
         payment: null,
         address: '',
@@ -161,81 +163,103 @@ export class BuyerModel implements IBuyerModel {
         total: 0,
         items: []
     };
+
     formErrors: FormErrors = {};
-   protected events: IEvents; //экземпляр класса `EventEmitter` для инициации событий при изменении данных.
+    protected events: IEvents; // Экземпляр класса EventEmitter
 
-   constructor(events: IEvents) {
-		this.events = events;
-	}
-    //получение данных заказа
-get order(): IOrder {
-    return {
-        ...this._buyer,
-        total: this._order.total,
-        items: this._order.items
-    };
-}
+    constructor(events: IEvents) {
+        this.events = events;
+    }
 
-//сохранение(обновление) данных в момент заполнения данных покупателем.
-setData(data: keyof IBuyer, value: string): void {
-        {
-        
+    // Получение данных заказа
+    get order(): IOrder {
+        return {
+            ...this._buyer,
+            total: this._order.total,
+            items: this._order.items
+        };
+    }
+
+    // Сохранение (обновление) данных
+    setData(data: keyof IBuyer, value: string | PaymentMethod): void {
         if (data === 'payment') {
-            // Проверяем, что значение соответствует допустимым вариантам
-            
-                this._buyer[data] = value as PaymentMethod;
-            } else {
-                this._buyer[data] = value as string;
-            }
-        
-        /*this.events.emit('buyer:data:updated', this._buyer);*/
+        // Проверяем, что значение соответствует допустимым вариантам
+        if (
+            typeof value === 'string' && 
+            (value === 'cash' || value === 'online')
+        ) {
+            this._buyer[data] = value as PaymentMethod;
+        }
+    } else {
+        this._buyer[data] = value as string;
+    }
+
         // Валидация полей
-    const errors: typeof this.formErrors = {};
-    const { payment, address, email, phone } = this._buyer;
-
-    // Проверка способа оплаты
-    if (!payment) {
-        errors.payment = 'Необходимо указать способ оплаты';
+        this.validate();
+        
+        // Эмиттим событие обновления данных
+        this.events.emit('buyer:data:updated', this._buyer);
     }
 
-    // Проверка адреса
-    if (!address || address.trim() === '') {
-        errors.address = 'Необходимо указать адрес';
+    // Метод валидации
+     validate(): boolean {
+        const errors: typeof this.formErrors = {};
+        const { payment, address, email, phone } = this._buyer;
+
+        // Проверка способа оплаты
+        if (!payment) {
+            errors.payment = 'Необходимо указать способ оплаты';
+        }
+
+        // Проверка адреса
+        if (!address || address.trim() === '') {
+            errors.address = 'Необходимо указать адрес';
+        }
+
+        // Проверка email
+        if (!email || email.trim() === '') {
+            errors.email = 'Необходимо указать email';
+        }
+
+        // Проверка телефона
+        if (!phone || phone.trim() === '') {
+            errors.phone = 'Необходимо указать телефон';
+        }
+
+        // Сохраняем ошибки
+        this.formErrors = errors;
+        this.events.emit('formErrors:change', this.formErrors);
+
+        // Определяем общую валидность
+        const isValid = Object.keys(errors).length === 0;
+
+        // Определяем валидность частей формы
+        const orderValid = !errors.payment && !errors.address;
+        const contactsValid = !errors.email && !errors.phone;
+
+        // Эмиттим события готовности
+        if (orderValid) {
+            this.events.emit('order:ready', this._buyer);
+        }
+        if (contactsValid) {
+            this.events.emit('contacts:ready', this._buyer);
+        }
+
+        return isValid;
     }
 
-    // Проверка email
-    if (!email || email.trim() === '') {
-        errors.email = 'Необходимо указать email';
+    // Очистить данные заказа
+    clear(): void {
+        this._buyer = {
+            payment: null,
+            address: '',
+            email: '',
+            phone: ''
+        };
+        this.formErrors = {};
+        this.events.emit('buyer:data:cleared');
     }
-
-    // Проверка телефона
-    if (!phone || phone.trim() === '') {
-        errors.phone = 'Необходимо указать телефон';
-    }
-
-    // Сохраняем ошибки
-    this.formErrors = errors;
-    this.events.emit('formErrors:change', this.formErrors);
-
-    // Определяем общую валидность
-    const isValid = Object.keys(errors).length === 0;
-
-    // Определяем валидность частей формы
-    const orderValid = !errors.payment && !errors.address;
-    const contactsValid = !errors.email && !errors.phone;
-
-    // Эмиттим события готовности
-    if (orderValid) {
-        this.events.emit('order:ready', this._buyer);
-    }
-    if (contactsValid) {
-        this.events.emit('contacts:ready', this._buyer);
-    }
-
-    return isValid;
 }
-    }
-    }
     
 /*
 /* //проверка валидации полей формы при оформлении заказа.
@@ -261,6 +285,7 @@ setData(data: keyof IBuyer, value: string): void {
 
     return isValid;
 }
+
     
 */
 
@@ -326,15 +351,5 @@ setData(data: keyof IBuyer, value: string): void {
         };
     }
 */
-    //очистить данные заказа.
-clear(): void {
-        this._buyer = {
-            payment: null,
-            address: '',
-            email: '',
-            phone: ''
-        };
-        this.formErrors = {};
-        this.events.emit('buyer:data:cleared');
-    }}
+    
 

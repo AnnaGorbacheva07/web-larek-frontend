@@ -23,6 +23,7 @@ export interface IProductsModel {
 
 // Интерфейс для описания покупателя (переделала по видео для исправления в классе заказа(переименован на класс Покупатель))
 export type PaymentMethod = 'cash' | 'online';
+
 export interface IBuyer {
 	payment: PaymentMethod | null;
 	address: string;
@@ -32,9 +33,8 @@ export interface IBuyer {
 
 // Интерфейс для модели покупателя
 export interface IBuyerModel {
-    setData(data: keyof IBuyer, 
-		value: string): void;
-    validationData(data: Record<keyof IBuyer, string>): boolean;
+    setData(data: keyof IBuyer, value: string | PaymentMethod): void;
+    validate(data: Record<keyof IBuyer, string>): boolean;
     get order(): IOrder;
     clear(): void;
 	formErrors: FormErrors;

@@ -217,7 +217,7 @@ events.on('formErrors:change', (errors:Partial<IFormOrderData & IFormContactsDat
 });
 
 	// Обработка событий формы заказа
-events.on(/^order\..*:change/, (data: { field: keyof IFormOrderData; value: string }) => {
+events.on(`${form.name}.${String(field)}:change`, (data: { field: keyof IFormOrderData; value: string }) => {
   // Обновляем модель заказа
   buyerModel.setData(data.field, data.value);
 
@@ -242,21 +242,21 @@ events.on(/^order\.payment:change/, (data: { field: keyof IFormOrderData; value:
  buyerModel.setData('payment', data.value);
  
  // Выполняем валидацию
- buyerModel.validationData();
+ buyerModel.validate();
  
  // Обновляем интерфейс
  orderForm.render({
  payment: data.value,
- valid: buyerModel.validationData(),
+ valid: buyerModel.validate(),
  errors: Object.values(buyerModel.formErrors)
  .filter(Boolean)
  .filter(error => typeof error === 'string')
  });
 });
-*/
+
     // Запускаем загрузку товаров
 api.getProducts()
     .then(productsModel.setProducts.bind(productsModel))
     .catch((err) => {
         console.error('Ошибка загрузки товаров:', err);
-    });
+    });*/
