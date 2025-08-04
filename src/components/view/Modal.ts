@@ -1,34 +1,39 @@
 import { IModal, IModalView } from "../../types"
+import { ensureElement } from "../../utils/utils";
 import { EventEmitter, IEvents } from "../base/events"
 import { Component } from "../component"
 
   export class Modal extends Component<IModalView> implements IModal {
-    protected events: EventEmitter;
+    /*protected events: EventEmitter;*/
     protected _content: HTMLElement;
     protected _closeButton: HTMLButtonElement;
+    private _events: IEvents;
 
-    constructor(container: HTMLElement, events: EventEmitter) {
+    constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
+        // Сохраняем события в приватное поле
         this.events = events;
 
+
         // Находим элементы
-        this._content = this.container.querySelector('.modal__content');
-        this._closeButton = this.container.querySelector('.modal__close');
-this._closeButton.addEventListener('click', () =>
-			this.events.emit('modal:close', {source: 'button'})
-		);
+        this._content = ensureElement<HTMLElement>('.modal__content', container);
+        this._closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
+        // Добавляем обработчики событий через метод close()
+        this._closeButton.addEventListener('click', () => {
+            this.close();
+        });
 
-
-        // Слушаем закрытие по Esc и клику на оверлей
+        // Обработчик закрытия по Esc
         this.container.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' || e.key === 'Esc') {
-               this.events.emit('modal:close', {source: 'escape'})
+                this.close();
             }
         });
 
+        // Обработчик клика на оверлей
         this.container.addEventListener('click', (e) => {
             if (e.target === this.container) {
-                this.events.emit('modal:close', {source: 'overlay'})
+                this.close();
             }
         });
     }

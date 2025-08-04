@@ -10,10 +10,10 @@ export class CardGallery extends CardProduct {
 	constructor(container: HTMLElement, actions?: ICardActions) {
 		super(container, actions);
 		
-// Проверяем существование элементов
+/*// Проверяем существование элементов
     if (!this._image || !this._category) {
         console.error('Не найдены элементы карточки');
-    }
+    }*/
 		// Поиск элементов в DOM
 		this._image = this.container.querySelector('.card__image');
 		this._category = this.container.querySelector('.card__category');

@@ -7,7 +7,7 @@ export class Basket extends Component<IBasket> {
 	protected _basketlist: HTMLElement;
 	protected _total: HTMLElement;
 	protected _button: HTMLButtonElement | null = null;
-protected events: IEvents;;
+protected events: IEvents;
 
  
 	constructor(container: HTMLElement, events: IEvents) {

@@ -4,7 +4,7 @@ import { Component } from "../component"
 
 export class Gallery extends Component<IGallery> {
     protected events: IEvents;
-    protected _catalog: HTMLElement | null;; // каталог с карточками товаров
+    protected _catalog: HTMLElement | null; // каталог с карточками товаров
     protected _container:HTMLElement;
 
     constructor(protected container: HTMLElement, events: IEvents) {

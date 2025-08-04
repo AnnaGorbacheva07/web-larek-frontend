@@ -1,8 +1,9 @@
-import { IFormContactsData } from "../../types";
+import { IForm, IFormContactsData } from "../../types";
 import { IEvents } from "../base/events";
 import { Form } from "./Form";
 
-export class FormContacts extends Form<IFormContactsData> {
+export class FormContacts extends Form<IFormContactsData> implements IForm {
+ 
 	protected _emailInput: HTMLInputElement;
 	protected _phoneInput: HTMLInputElement;
 

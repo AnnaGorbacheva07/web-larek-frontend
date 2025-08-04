@@ -3,13 +3,16 @@ import { ensureAllElements } from "../../utils/utils";
 import { IEvents } from "../base/events";
 import { Form } from "./Form";
 
-export class FormOrder extends Form<IFormOrderData> {
+export class FormOrder extends Form<IFormOrderData> implements IForm{
 	protected _paymentButtons: HTMLButtonElement[];
 	protected _addressInput: HTMLInputElement;
 
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
-
+// Проверяем, что контейнер является формой
+ if (!(container instanceof HTMLFormElement)) {
+ throw new Error('Container must be an HTMLFormElement');
+ }
 		this._paymentButtons = Array.from(
       this.container.querySelectorAll('button[name="card"], button[name="cash"]')
     );
@@ -36,17 +39,15 @@ export class FormOrder extends Form<IFormOrderData> {
 	}
 
 	
-	/*
-	 * Переопределяем render, чтобы при повторном показе формы
-	 * активная кнопка соответствовала состоянию модели
-	 
-	render(state: Partial<IFormOrderData> & IForm) {
-		// вызываем базовый рендер для установки адреса/валидности/ошибок
-		super.render(state);
+	// Переопределяем метод render для обновления состояния кнопок
+    render(state: Partial<IFormOrderData> & IForm): HTMLFormElement {
+        // Вызываем базовый рендер
+        const result = super.render(state) as HTMLFormElement;
 
-		// state.payment может быть undefined (при первом рендере)
-		this._togglePaymentActive(state.payment ?? null);
-		return this.container;
-	}
-	*/
+        // Обновляем активность кнопок оплаты
+        this._togglePaymentActive(state.payment ?? null);
+
+        return result;
+    }
 }
+

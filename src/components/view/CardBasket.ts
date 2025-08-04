@@ -8,7 +8,7 @@ export class BasketCard extends CardProduct {
         super(container, actions);
 
         // Специфичные элементы для корзины
-        this._index = this.container.querySelector('.basket__item-index')!;
+        this._index = this.container.querySelector('.basket__item-index');
     }
 
     set index(value: number) {

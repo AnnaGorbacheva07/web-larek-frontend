@@ -11,10 +11,10 @@ import { Component } from "../component";
 
   constructor(container: HTMLElement, actions?: ICardActions) {
     super(container);
-	// Проверяем существование элементов
+	/*// Проверяем существование элементов
     if (!this._title || !this._price) {
         console.error('Не найдены основные элементы карточки');
-    }
+    }*/
     this.events = new EventEmitter();
 
     // Поиск элементов в DOM

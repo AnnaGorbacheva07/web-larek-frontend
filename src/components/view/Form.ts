@@ -9,9 +9,12 @@ export class Form<T> extends Component<IForm>{
  protected events: EventEmitter;
 
  constructor(container: HTMLFormElement, events: IEvents) {
- super(container);
+ super(container as HTMLElement );
  this.events = new EventEmitter();
- 
+ // Убедимся, что контейнер является формой
+ if (!(container instanceof HTMLFormElement)) {
+ throw new Error('Container must be an HTMLFormElement');
+ }
  // Поиск элементов с проверкой существования
  this._submitButton = this.container.querySelector('.order__button');
  this._errors = this.container.querySelector('.form__errors');

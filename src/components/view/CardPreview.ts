@@ -12,9 +12,9 @@ export class PreviewCard extends CardProduct {
         super(container, actions);
 
         // Специфичные элементы для предпросмотра
-        this._description = this.container.querySelector('.card__text')!;
-        this._image = this.container.querySelector('.card__image')!;
-        this._button = this.container.querySelector('.card__button')!;
+        this._description = this.container.querySelector('.card__text');
+        this._image = this.container.querySelector('.card__image');
+        this._button = this.container.querySelector('.card__button');
         this._category = this.container.querySelector('.card__category');
     }
 
