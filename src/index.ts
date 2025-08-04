@@ -3,7 +3,7 @@ import {  EventEmitter } from './components/base/events';
 import { ProductsModel } from './components/models/productsModel';
 import { BuyerModel } from './components/models/buyerModel';
 import { BasketModel } from './components/models/basketModel';
-import { ICard, IFormContactsData, IFormOrderData, IProduct, PaymentMethod } from './types';
+import { IBuyer, ICard, IFormContactsData, IFormOrderData, IProduct, PaymentMethod } from './types';
 import { Api } from './components/base/api';
 import { API_URL, CDN_URL } from './utils/constants';
 import { LarekAPI } from './components/larekApi/larekApi';
@@ -198,8 +198,9 @@ events.on('basket:open', () => {
 		}),
 	});
 });
+/*
 // Обработчик ошибок
-events.on('formErrors:change', (errors: Partial<IFormOrderData & IFormContactsData>) => {
+events.on('formErrors:change', (errors:Partial<IFormOrderData & IFormContactsData>) => {
     const { payment, address, email, phone } = errors;
 
     // Для формы заказа
@@ -252,7 +253,7 @@ events.on(/^order\.payment:change/, (data: { field: keyof IFormOrderData; value:
  .filter(error => typeof error === 'string')
  });
 });
-
+*/
     // Запускаем загрузку товаров
 api.getProducts()
     .then(productsModel.setProducts.bind(productsModel))

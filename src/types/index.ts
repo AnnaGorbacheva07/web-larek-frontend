@@ -32,10 +32,12 @@ export interface IBuyer {
 
 // Интерфейс для модели покупателя
 export interface IBuyerModel {
-    setData(data: keyof IBuyer, value: string): void;
+    setData(data: keyof IBuyer, 
+		value: string): void;
     validationData(data: Record<keyof IBuyer, string>): boolean;
     get order(): IOrder;
     clear(): void;
+	formErrors: FormErrors;
 }
 
 // Заказ, отправляемый из корзины на сервер
