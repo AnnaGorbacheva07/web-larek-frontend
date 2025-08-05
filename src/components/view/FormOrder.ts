@@ -1,13 +1,13 @@
 import { IFormOrderData, PaymentMethod, IForm } from "../../types";
 import { ensureAllElements } from "../../utils/utils";
-import { IEvents } from "../base/events";
+import { EventEmitter, IEvents } from "../base/events";
 import { Form } from "./Form";
 
 export class FormOrder extends Form<IFormOrderData> implements IForm {
     protected _paymentButtons: HTMLButtonElement[];
     protected _addressInput: HTMLInputElement;
 
-    constructor(container: HTMLFormElement, events: IEvents) {
+    constructor(container: HTMLFormElement, events: EventEmitter) {
         super(container, events);
         
         // Проверяем, что контейнер является формой

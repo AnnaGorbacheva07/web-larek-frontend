@@ -1,5 +1,5 @@
 import { IForm, IFormContactsData } from "../../types";
-import { IEvents } from "../base/events";
+import { EventEmitter, IEvents } from "../base/events";
 import { Form } from "./Form";
 
 export class FormContacts extends Form<IFormContactsData> implements IForm {
@@ -7,7 +7,7 @@ export class FormContacts extends Form<IFormContactsData> implements IForm {
 	protected _emailInput: HTMLInputElement;
 	protected _phoneInput: HTMLInputElement;
 
-	constructor(container: HTMLFormElement, events: IEvents) {
+	constructor(container: HTMLFormElement, events:EventEmitter) {
 		super(container, events);
 
 		this._emailInput = this.container.querySelector('input[name="email"]');

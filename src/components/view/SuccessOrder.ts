@@ -10,9 +10,8 @@ export class SuccessOrder extends Component<ISuccess> {
             super(container);
             this.actions = actions;
 
-		this._successButton = this.container.querySelector('.button order-success__close');
-		this._total = this.container.querySelector('.order-success__description');
-
+		this._successButton = this.container.querySelector('.button.order-success__close') as HTMLButtonElement | null;
+		this._total = this.container.querySelector('.order-success__description') as HTMLElement | null;
 		this._successButton.addEventListener('click', () => {
 			this.actions.onClick();
 		});

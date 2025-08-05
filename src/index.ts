@@ -53,9 +53,9 @@ const basketContainer = cloneTemplate<HTMLElement>(basketTemplate);
 const orderContainer = cloneTemplate<HTMLFormElement>(orderTemplate);
 
 const contactsContainer = cloneTemplate<HTMLFormElement>(contactsTemplate);
-/*
-const successContainer = document.querySelector('.success__container') as HTMLElement;
-*/
+
+const successContainer = cloneTemplate<HTMLElement>(successTemplate);
+
 // Экземпляры модели данных
 const productsModel = new ProductsModel(events);
 const buyerModel = new BuyerModel(events);
@@ -73,12 +73,12 @@ const basket = new Basket(basketContainer, events);
 const orderForm = new FormOrder(orderContainer, events);
 
 const contactsForm = new FormContacts(contactsContainer, events);
-/*
+
 const successView = new SuccessOrder(successContainer, {
 	onClick: () => {
 		modal.close();
 	},
-});*/
+});
 
 // Обработчик загрузки товаров
 events.on('items:change', (items: IProduct[]) => {
@@ -198,9 +198,9 @@ events.on('basket:open', () => {
 		}),
 	});
 });
-/*
+
 // Обработчик ошибок
-events.on('formErrors:change', (errors:Partial<IFormOrderData & IFormContactsData>) => {
+events.on('validation:error', (errors:Partial<IFormOrderData & IFormContactsData>) => {
     const { payment, address, email, phone } = errors;
 
     // Для формы заказа
@@ -217,46 +217,93 @@ events.on('formErrors:change', (errors:Partial<IFormOrderData & IFormContactsDat
 });
 
 	// Обработка событий формы заказа
-events.on(`${form.name}.${String(field)}:change`, (data: { field: keyof IFormOrderData; value: string }) => {
+events.on(/^order\..*:change/, (data: { field: keyof IFormOrderData; value: string }) => {
   // Обновляем модель заказа
   buyerModel.setData(data.field, data.value);
+const orderValid =
+			!buyerModel.formErrors.payment && !buyerModel.formErrors.address;
+		const orderErrors = Object.values({
+			payment: buyerModel.formErrors.payment,
+			address: buyerModel.formErrors.address,
+		}).filter((e): e is string => Boolean(e));
+		orderForm.render({
+			payment: buyerModel.order.payment,
+			address: buyerModel.order.address,
+			valid: orderValid,
+			errors: orderErrors,
+		});
 
-  // Вычисляем валидность
-  const orderValid = !buyerModel.formErrors.payment && !buyerModel.formErrors.address;
-  const orderErrors = Object.values({
-    payment: buyerModel.formErrors.payment,
-    address: buyerModel.formErrors.address
+});
+
+events.on(
+	/^contacts\..*:change/,
+	(data: { field: keyof IFormContactsData; value: string }) => {
+		buyerModel.setData( data.field as keyof (IFormOrderData & IFormContactsData), data.value);
+/*
+// Вычисляем валидность
+const contactsValid = !buyerModel.formErrors.email && !buyerModel.formErrors.phone;
+  const contactsErrors = Object.values({
+    email: buyerModel.formErrors.email,
+    phone: buyerModel.formErrors.phone
   }).filter((e): e is string => Boolean(e));
 
-  // Рендерим форму
-  orderForm.render({
-    payment: buyerModel.order.payment,
-    address: buyerModel.order.address,
-    valid: orderValid,
-    errors: orderErrors
+// Рендерим форму
+contactsForm.render({
+    email: buyerModel.order.email,
+    phone: buyerModel.order.phone,
+    valid: contactsValid,
+    errors: contactsErrors,
   });
-});	
-// В обработчике событий:
-events.on(/^order\.payment:change/, (data: { field: keyof IFormOrderData; value: PaymentMethod }) => {
- // Обновляем модель
- buyerModel.setData('payment', data.value);
- 
- // Выполняем валидацию
- buyerModel.validate();
- 
- // Обновляем интерфейс
- orderForm.render({
- payment: data.value,
- valid: buyerModel.validate(),
- errors: Object.values(buyerModel.formErrors)
- .filter(Boolean)
- .filter(error => typeof error === 'string')
- });
+ */
 });
+// Обработка сабмита
+events.on('order:submit', () => {
+	modal.render({
+		content: contactsForm.render({
+			phone: '',
+			email: '',
+			valid: false,
+			errors: [],
+		}),
+	});
+});
+// Отправлена форма контактов
+events.on('contacts:submit', () => {
+	if (buyerModel.validate()) {
+        api.createOrder(buyerModel.order)
+		.then((result) => {
+			modal.render({
+				content: successView.render({
+					total: result.total,
+				}),
+			});
+
+			basketModel.clear();
+			buyerModel.clear();
+		})
+		.catch((err) => {
+			console.error(err);
+		});}
+});
+/*
+events.on('contacts:submit', () => {
+	if (buyerModel.validate()) {
+			modal.render({
+				content: successView.render({
+					total: result.total,
+				}),
+			});
+
+			basketModel.clear();
+			buyerModel.clear();
+
+}*/
+	
+
 
     // Запускаем загрузку товаров
 api.getProducts()
     .then(productsModel.setProducts.bind(productsModel))
     .catch((err) => {
         console.error('Ошибка загрузки товаров:', err);
-    });*/
+    });
