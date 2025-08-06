@@ -1,4 +1,5 @@
 import { FormErrors, IForm } from "../../types"
+import { ensureElement } from "../../utils/utils";
 import { EventEmitter, IEvents } from "../base/events"
 import { Component } from "../component"
 export class Form<T> extends Component<IForm> {
@@ -14,7 +15,11 @@ export class Form<T> extends Component<IForm> {
 			throw new Error('Container must be an HTMLFormElement');
 		}
 		// Поиск элементов с проверкой существования
-		this._submitButton = this.container.querySelector('.order__button');
+		this._submitButton = ensureElement<HTMLButtonElement>(
+      'button[type=submit]',
+      this.container
+    );
+		/*this._submitButton = this.container.querySelector('.order__button');*/
 		this._errors = this.container.querySelector('.form__errors');
 
 		// обработчик изменения полей

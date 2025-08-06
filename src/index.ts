@@ -3,7 +3,7 @@ import {  EventEmitter } from './components/base/events';
 import { ProductsModel } from './components/models/productsModel';
 import { BuyerModel } from './components/models/buyerModel';
 import { BasketModel } from './components/models/basketModel';
-import { IBuyer, ICard, IFormContactsData, IFormOrderData, IProduct, PaymentMethod } from './types';
+import { IBuyer, ICard, IFormContactsData, IFormOrderData, IOrderResult, IProduct, PaymentMethod } from './types';
 import { Api } from './components/base/api';
 import { API_URL, CDN_URL } from './utils/constants';
 import { LarekAPI } from './components/larekApi/larekApi';
@@ -253,8 +253,8 @@ contactsForm.render({
     phone: buyerModel.order.phone,
     valid: contactsValid,
     errors: contactsErrors,
-  });
- */
+  });*/
+ 
 });
 // Обработка сабмита
 events.on('order:submit', () => {
@@ -267,9 +267,10 @@ events.on('order:submit', () => {
 		}),
 	});
 });
+
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
-	if (buyerModel.validate()) {
+	
         api.createOrder(buyerModel.order)
 		.then((result) => {
 			modal.render({
@@ -283,23 +284,8 @@ events.on('contacts:submit', () => {
 		})
 		.catch((err) => {
 			console.error(err);
-		});}
-});
-/*
-events.on('contacts:submit', () => {
-	if (buyerModel.validate()) {
-			modal.render({
-				content: successView.render({
-					total: result.total,
-				}),
-			});
-
-			basketModel.clear();
-			buyerModel.clear();
-
-}*/
-	
-
+		});
+})
 
     // Запускаем загрузку товаров
 api.getProducts()

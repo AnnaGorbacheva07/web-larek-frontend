@@ -1,5 +1,5 @@
 
-import {IBuyerModel, IBuyer, IOrder, PaymentMethod, FormErrors } from "../../../src/types/index";
+import {IBuyerModel, IBuyer, IOrder, PaymentMethod, FormErrors, IBasketModel } from "../../../src/types/index";
 import {IEvents} from "../../components/base/events";
 
 export class BuyerModel implements IBuyerModel {
@@ -24,8 +24,9 @@ export class BuyerModel implements IBuyerModel {
     protected events: IEvents; // Экземпляр класса EventEmitter
 
     constructor(events: IEvents) {
-        this.events = events;
+        this.events = events; 
     }
+
 
     // Получение данных заказа
     get order(): IOrder {
