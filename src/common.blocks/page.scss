@@ -13,5 +13,9 @@ html, body.page {
 
 	&_locked {
 		position: fixed;
+		/*overflow: hidden; // Блокируем прокрутку
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s ease; // Плавный переход*/
 	}
 }

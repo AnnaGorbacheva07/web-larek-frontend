@@ -36,16 +36,18 @@ export class BasketModel implements IBasketModel {
 			return;
 		}
 
+    
+
 		this._items.set(product.id,{...product});
 		this.events.emit('basket:changed', this.getItems());
 	}
-  
+	
 	//удалить товар из корзины
 	removeProduct(id: string): void {
     this._items.delete(id);
     this.events.emit('basket:changed', this.getItems());
   }
-
+  
 	//очищение всей корзины
 	clear(): void {
     this._items.clear();

@@ -57,9 +57,10 @@ const contactsContainer = cloneTemplate<HTMLFormElement>(contactsTemplate);
 const successContainer = cloneTemplate<HTMLElement>(successTemplate);
 
 // Экземпляры модели данных
-const productsModel = new ProductsModel(events);
-const buyerModel = new BuyerModel(events);
 const basketModel = new BasketModel(events);
+const productsModel = new ProductsModel(events);
+const buyerModel = new BuyerModel(events, basketModel);
+/*const basketModel = new BasketModel(events);*/
 
 // Экземпляры классов представления
 const header = new Header(headerContainer, events);
@@ -270,8 +271,10 @@ events.on('order:submit', () => {
 
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
-	
-        api.createOrder(buyerModel.order)
+	// Собираем данные для отправки
+    const order= buyerModel.order;
+
+        api.createOrder(order)
 		.then((result) => {
 			modal.render({
 				content: successView.render({
@@ -286,6 +289,23 @@ events.on('contacts:submit', () => {
 			console.error(err);
 		});
 })
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+	const wrapper = document.querySelector('.page__wrapper');
+    if (wrapper) {
+        wrapper.classList.add('page__wrapper_locked'); // Добавляем класс для блокировки
+    }
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+	 const wrapper = document.querySelector('.page__wrapper');
+    if (wrapper) {
+        wrapper.classList.remove('page__wrapper_locked'); // Удаляем класс
+    }
+});
+
 
     // Запускаем загрузку товаров
 api.getProducts()

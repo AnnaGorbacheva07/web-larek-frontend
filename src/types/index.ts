@@ -43,7 +43,8 @@ export interface IBuyerModel {
 // Заказ, отправляемый из корзины на сервер
 export interface IOrder extends IBuyer {
 	total: number;
-	items: string[]; // массив id товаров
+	items:IProduct[];
+	/*items: string[]; // массив id товаров*/
 }
 // Ответ сервера о  заказе
 export interface IOrderResult {

@@ -1,7 +1,7 @@
 
 import {IBuyerModel, IBuyer, IOrder, PaymentMethod, FormErrors, IBasketModel } from "../../../src/types/index";
 import {IEvents} from "../../components/base/events";
-
+import { BasketModel } from "./basketModel";
 export class BuyerModel implements IBuyerModel {
     // Данные, введенные покупателем
     protected _buyer: IBuyer = {
@@ -19,24 +19,28 @@ export class BuyerModel implements IBuyerModel {
         total: 0,
         items: []
     };
-
+    
+// Добавляем зависимость от BasketModel
+    private basketModel: BasketModel;
     formErrors: FormErrors = {};
     protected events: IEvents; // Экземпляр класса EventEmitter
 
-    constructor(events: IEvents) {
+    constructor(events: IEvents,basketModel: BasketModel) {
         this.events = events; 
+this.basketModel = basketModel;
     }
-
 
     // Получение данных заказа
     get order(): IOrder {
         return {
             ...this._buyer,
-            total: this._order.total,
-            items: this._order.items
+            total: this.basketModel.getTotal(), // Получаем актуальную сумму
+            items: Array.from(this.basketModel.getItems().values()) // Преобразуем Map в массив
         };
     }
 
+
+       
     // Сохранение (обновление) данных
     setData(data: keyof IBuyer, value: string | PaymentMethod): void {
         if (data === 'payment') {
