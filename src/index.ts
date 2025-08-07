@@ -272,7 +272,11 @@ events.on('order:submit', () => {
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
 	// Собираем данные для отправки
-    const order= buyerModel.order;
+    const order= {...buyerModel._order,
+		total: basketModel.getTotal(), // Получаем актуальную сумму
+            items: Array.from(basketModel.getItems().values()) // Преобразуем Map в массив}
+	}
+            
 
         api.createOrder(order)
 		.then((result) => {

@@ -4,20 +4,20 @@ import {IEvents} from "../../components/base/events";
 import { BasketModel } from "./basketModel";
 export class BuyerModel implements IBuyerModel {
     // Данные, введенные покупателем
-    protected _buyer: IBuyer = {
+    _buyer: IBuyer = {
         payment: null,
         address: '',
         email: '',
         phone: ''
     };
 
-    protected _order: IOrder = {
+     _order: IOrder = {
         payment: null,
         address: '',
         email: '',
         phone: '',
         total: 0,
-        items: []
+        items: [] as string[],
     };
     
 // Добавляем зависимость от BasketModel

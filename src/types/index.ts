@@ -35,7 +35,7 @@ export interface IBuyer {
 export interface IBuyerModel {
     setData(data: keyof IBuyer, value: string | PaymentMethod): void;
     validate(data: Record<keyof IBuyer, string>): boolean;
-    get order(): IOrder;
+    /*get order(): IOrder;*/
     clear(): void;
 	formErrors: FormErrors;
 }
@@ -43,8 +43,8 @@ export interface IBuyerModel {
 // Заказ, отправляемый из корзины на сервер
 export interface IOrder extends IBuyer {
 	total: number;
-	items:IProduct[];
-	/*items: string[]; // массив id товаров*/
+	
+	items: string[]; // массив id товаров
 }
 // Ответ сервера о  заказе
 export interface IOrderResult {
@@ -57,6 +57,7 @@ export type FormErrors = Partial<Record<keyof IOrder, string>>;
 //Интерфейс модели корзины
 
 export interface IBasketModel {
+	
 	  getItems(): Map<string, IProduct>; //получить список товаров
 	  getTotalCount(): number;//получить количество товаров в корзине
 	  hasItem(id: string): boolean; //узнать наличие товара
