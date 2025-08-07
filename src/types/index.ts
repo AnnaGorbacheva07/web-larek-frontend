@@ -35,7 +35,7 @@ export interface IBuyer {
 export interface IBuyerModel {
     setData(data: keyof IBuyer, value: string | PaymentMethod): void;
     validate(data: Record<keyof IBuyer, string>): boolean;
-  /*get order(): IOrder;*/
+  get order(): IOrder;
     clear(): void;
 	formErrors: FormErrors;
 }

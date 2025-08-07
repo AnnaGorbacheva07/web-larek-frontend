@@ -12,8 +12,7 @@ export class Gallery extends Component<IGallery> {
         this.events = events;
         this._container = container;
         this._catalog = this.container.querySelector('.gallery');
-       /* this._catalog = document.querySelector('.gallery');*/
-        /*this.container.querySelector('.gallery');*/
+       
             }
     // Сеттер для отображения карточек с товарами
     set catalog(cards: HTMLElement[]) {
@@ -22,7 +21,6 @@ export class Gallery extends Component<IGallery> {
         this.container.appendChild(card);
     });
 }
-    /*set catalog(items: HTMLElement[]) {
-        this._catalog.replaceChildren(...items);  }*/
+    
 
     }

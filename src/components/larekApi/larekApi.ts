@@ -9,9 +9,9 @@ export class LarekAPI extends Api implements ILarekAPI {
 		this.cdn = cdn;
 	}
 
-	/**
-	 * Получить список товаров
-	 */
+	
+	 //Получить список товаров
+	 
 	getProducts(): Promise<IProduct[]> {
 		return this.get('/product').then((data: ApiListResponse<IProduct>) =>
 			data.items.map((item) => ({
@@ -21,9 +21,9 @@ export class LarekAPI extends Api implements ILarekAPI {
 		);
 	}
 
-	/**
-	 * Получить товар по ID
-	 */
+	
+	 //Получить товар по ID
+	 
 	getProduct(id: string): Promise<IProduct> {
 		return this.get(`/product/${id}`).then((item: IProduct) => ({
 			...item,
@@ -31,9 +31,9 @@ export class LarekAPI extends Api implements ILarekAPI {
 		}));
 	}
 
-	/**
-	 * Создать заказ
-	 */
+	
+	//Создать заказ
+	 
 	createOrder(order: IOrder): Promise<IOrderResult> {
 		return this.post('/order', order).then((data: IOrderResult) => data);
 	}

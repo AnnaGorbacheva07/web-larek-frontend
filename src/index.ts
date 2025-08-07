@@ -23,9 +23,6 @@ import { BasketCard } from './components/view/CardBasket';
 const events = new EventEmitter();
 const api = new LarekAPI (CDN_URL, API_URL);
 
-/*events.onAll((event) => {
-    console.log(event.eventName, event.data)
-})*/
 // Шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 
@@ -40,13 +37,13 @@ const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 const headerContainer = document.querySelector('.header__container') as HTMLElement;
 const galleryContainer = document.querySelector('.gallery') as HTMLElement;
 if (!galleryContainer) {
-    console.error('Контейнер галереи не найден в DOM');
-    throw new Error('Контейнер галереи не найден');
+	console.error('Контейнер галереи не найден в DOM');
+	throw new Error('Контейнер галереи не найден');
 }
 const modalContainer = document.querySelector('.modal') as HTMLElement;
 if (!modalContainer) {
-    console.error('Контейнер модального окна не найден в DOM');
-    throw new Error('Контейнер модального окна не найден');
+	console.error('Контейнер модального окна не найден в DOM');
+	throw new Error('Контейнер модального окна не найден');
 }
 const basketContainer = cloneTemplate<HTMLElement>(basketTemplate);
 
@@ -83,15 +80,15 @@ const successView = new SuccessOrder(successContainer, {
 
 // Обработчик загрузки товаров
 events.on('items:change', (items: IProduct[]) => {
-    console.log(items);
-  gallery.catalog = items.map(item => {
-    const card = new CardGallery(cloneTemplate(cardCatalogTemplate), {
-      onClick: () => {
-        events.emit('card:select', item);
-      }
-    })
-    return card.render(item);
-  })
+	console.log(items);
+	gallery.catalog = items.map(item => {
+		const card = new CardGallery(cloneTemplate(cardCatalogTemplate), {
+			onClick: () => {
+				events.emit('card:select', item);
+			}
+		})
+		return card.render(item);
+	})
 });
 // Изменение открытого выбранного товар
 events.on('preview:changed', (item: IProduct) => {
@@ -121,9 +118,9 @@ events.on('preview:changed', (item: IProduct) => {
 				description: item.description,
 				button: basketModel.hasItem(item.id) ? 'Удалить из корзины' : 'В корзину',
 			}),
-            
-	});
-    
+
+		});
+
 	};
 
 	if (item) {
@@ -136,60 +133,60 @@ events.on('preview:changed', (item: IProduct) => {
 
 // Обработчик выбора карточки
 events.on('card:select', (item: IProduct) => {
-    // Логика при выборе карточки
-    console.log('Выбрана карточка:', item);
-    // Например, открытие превью товара
-    productsModel.setPreview(item);
+	// Логика при выборе карточки
+	console.log('Выбрана карточка:', item);
+	// Например, открытие превью товара
+	productsModel.setPreview(item);
 });
 
-    // Изменения в корзине
+// Изменения в корзине
 events.on('basket:changed',() => {
-header.counter = basketModel.getTotalCount();
+	header.counter = basketModel.getTotalCount();
 // Получаем элементы корзины и преобразуем их в массив
-    const itemsArray = Array.from(basketModel.getItems().values());
-    
-    // Преобразуем товары в элементы корзины
-    basket.items = itemsArray.map((item, index) => {
-        const card = new BasketCard(
-            cloneTemplate(cardBasketTemplate),
-            {
-                onClick: () => {
-                    basketModel.removeProduct(item.id);
-                    
-                }
-            }
-        );
-        
-        const element = card.render({
-            id: item.id,
-            title: item.title,
-            price: item.price
-        });
-        
-        // Устанавливаем индекс товара
-        const indexElement = element.querySelector('.basket__item-index');
-        if (indexElement) {
-            indexElement.textContent = String(index + 1);
-        }
-        
-        return element;
-    });
-    
-    // Обновляем общую сумму и состояние кнопки
-    basket.total = basketModel.getTotal();
-    basket.disabledButton = basketModel.getTotalCount() === 0;
+	const itemsArray = Array.from(basketModel.getItems().values());
+
+	// Преобразуем товары в элементы корзины
+	basket.items = itemsArray.map((item, index) => {
+		const card = new BasketCard(
+			cloneTemplate(cardBasketTemplate),
+			{
+				onClick: () => {
+					basketModel.removeProduct(item.id);
+
+				}
+			}
+		);
+
+		const element = card.render({
+			id: item.id,
+			title: item.title,
+			price: item.price
+		});
+
+		// Устанавливаем индекс товара
+		const indexElement = element.querySelector('.basket__item-index');
+		if (indexElement) {
+			indexElement.textContent = String(index + 1);
+		}
+
+		return element;
+	});
+
+	// Обновляем общую сумму и состояние кнопки
+	basket.total = basketModel.getTotal();
+	
 });
-  
-    // Открыть корзину
+
+// Открыть корзину
 events.on('basket:open', () => {
 	modal.render({
 		content: basket.render(),
 	});
-   
-	});
 
-    //открыть форму заказа
-    events.on('order:open', () => {
+});
+
+//открыть форму заказа
+events.on('order:open', () => {
 	modal.render({
 		content: orderForm.render({
 			payment: null,
@@ -202,38 +199,37 @@ events.on('basket:open', () => {
 
 // Обработчик ошибок
 events.on('validation:error', (errors:Partial<IFormOrderData & IFormContactsData>) => {
-    const { payment, address, email, phone } = errors;
+	const { payment, address, email, phone } = errors;
 
-    // Для формы заказа
-    orderForm.valid = !payment && !address;
-    orderForm.errors = [payment, address]
-        .filter(Boolean) // Фильтруем пустые значения
-        .filter(error => typeof error === 'string'); // Оставляем только строки
+	// Для формы заказа
+	orderForm.valid = !payment && !address;
+	orderForm.errors = [payment, address]
+		.filter(Boolean) // Фильтруем пустые значения
+		.filter(error => typeof error === 'string'); // Оставляем только строки
 
-    // Для контактной формы
-    contactsForm.valid = !email && !phone;
-    contactsForm.errors = [phone, email]
-        .filter(Boolean) // Фильтруем пустые значения
-        .filter(error => typeof error === 'string'); // Оставляем только строки
+	// Для контактной формы
+	contactsForm.valid = !email && !phone;
+	contactsForm.errors = [phone, email]
+		.filter(Boolean) // Фильтруем пустые значения
+		.filter(error => typeof error === 'string'); // Оставляем только строки
 });
 
-	// Обработка событий формы заказа
+// Обработка событий формы заказа
 events.on(/^order\..*:change/, (data: { field: keyof IFormOrderData; value: string }) => {
-  // Обновляем модель заказа
-  buyerModel.setData(data.field, data.value);
-const orderValid =
-			!buyerModel.formErrors.payment && !buyerModel.formErrors.address;
-		const orderErrors = Object.values({
-			payment: buyerModel.formErrors.payment,
-			address: buyerModel.formErrors.address,
-		}).filter((e): e is string => Boolean(e));
-		orderForm.render({
-			
-			payment: buyerModel._order.payment,
-			address: buyerModel._order.address,
-			valid: orderValid,
-			errors: orderErrors,
-		});
+	// Обновляем модель заказа
+	buyerModel.setData(data.field, data.value);
+	const orderValid =
+		!buyerModel.formErrors.payment && !buyerModel.formErrors.address;
+	const orderErrors = Object.values({
+		payment: buyerModel.formErrors.payment,
+		address: buyerModel.formErrors.address,
+	}).filter((e): e is string => Boolean(e));
+	orderForm.render({
+		payment: buyerModel.order.payment,
+		address: buyerModel.order.address,
+		valid: orderValid,
+		errors: orderErrors,
+	});
 
 });
 
@@ -241,23 +237,8 @@ events.on(
 	/^contacts\..*:change/,
 	(data: { field: keyof IFormContactsData; value: string }) => {
 		buyerModel.setData( data.field as keyof (IFormOrderData & IFormContactsData), data.value);
-/*
-// Вычисляем валидность
-const contactsValid = !buyerModel.formErrors.email && !buyerModel.formErrors.phone;
-  const contactsErrors = Object.values({
-    email: buyerModel.formErrors.email,
-    phone: buyerModel.formErrors.phone
-  }).filter((e): e is string => Boolean(e));
-
-// Рендерим форму
-contactsForm.render({
-    email: buyerModel.order.email,
-    phone: buyerModel.order.phone,
-    valid: contactsValid,
-    errors: contactsErrors,
-  });*/
- 
-});
+		
+	});
 // Обработка сабмита
 events.on('order:submit', () => {
 	modal.render({
@@ -273,14 +254,13 @@ events.on('order:submit', () => {
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
 	// Собираем данные для отправки
-    const order= {
-		...buyerModel._order,
-		total: basketModel.getTotal(), // Получаем актуальную сумму
-           items: Array.from(basketModel.getItems().keys()) // Преобразуем Map в массив}
-	}
-            
+	const order = {
+		...buyerModel.order,
+		total: basketModel.getTotal(),
+		items: Array.from(basketModel.getItems().keys())
+	};
 
-        api.createOrder(order)
+	api.createOrder(order)
 		.then((result) => {
 			modal.render({
 				content: successView.render({
@@ -299,23 +279,23 @@ events.on('contacts:submit', () => {
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {
 	const wrapper = document.querySelector('.page__wrapper');
-    if (wrapper) {
-        wrapper.classList.add('page__wrapper_locked'); // Добавляем класс для блокировки
-    }
+	if (wrapper) {
+		wrapper.classList.add('page__wrapper_locked'); // Добавляем класс для блокировки
+	}
 });
 
 // ... и разблокируем
 events.on('modal:close', () => {
-	 const wrapper = document.querySelector('.page__wrapper');
-    if (wrapper) {
-        wrapper.classList.remove('page__wrapper_locked'); // Удаляем класс
-    }
+	const wrapper = document.querySelector('.page__wrapper');
+	if (wrapper) {
+		wrapper.classList.remove('page__wrapper_locked'); // Удаляем класс
+	}
 });
 
 
-    // Запускаем загрузку товаров
+// Запускаем загрузку товаров
 api.getProducts()
-    .then(productsModel.setProducts.bind(productsModel))
-    .catch((err) => {
-        console.error('Ошибка загрузки товаров:', err);
-    });
+	.then(productsModel.setProducts.bind(productsModel))
+	.catch((err) => {
+		console.error('Ошибка загрузки товаров:', err);
+	});
