@@ -35,7 +35,7 @@ export interface IBuyer {
 export interface IBuyerModel {
     setData(data: keyof IBuyer, value: string | PaymentMethod): void;
     validate(data: Record<keyof IBuyer, string>): boolean;
-    /*get order(): IOrder;*/
+  /*get order(): IOrder;*/
     clear(): void;
 	formErrors: FormErrors;
 }
@@ -43,7 +43,6 @@ export interface IBuyerModel {
 // Заказ, отправляемый из корзины на сервер
 export interface IOrder extends IBuyer {
 	total: number;
-	
 	items: string[]; // массив id товаров
 }
 // Ответ сервера о  заказе

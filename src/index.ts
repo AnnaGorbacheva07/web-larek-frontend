@@ -228,8 +228,9 @@ const orderValid =
 			address: buyerModel.formErrors.address,
 		}).filter((e): e is string => Boolean(e));
 		orderForm.render({
-			payment: buyerModel.order.payment,
-			address: buyerModel.order.address,
+			
+			payment: buyerModel._order.payment,
+			address: buyerModel._order.address,
 			valid: orderValid,
 			errors: orderErrors,
 		});
@@ -272,9 +273,10 @@ events.on('order:submit', () => {
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
 	// Собираем данные для отправки
-    const order= {...buyerModel._order,
+    const order= {
+		...buyerModel._order,
 		total: basketModel.getTotal(), // Получаем актуальную сумму
-            items: Array.from(basketModel.getItems().values()) // Преобразуем Map в массив}
+           items: Array.from(basketModel.getItems().keys()) // Преобразуем Map в массив}
 	}
             
 

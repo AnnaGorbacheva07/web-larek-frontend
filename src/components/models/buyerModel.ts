@@ -29,15 +29,15 @@ export class BuyerModel implements IBuyerModel {
         this.events = events; 
 this.basketModel = basketModel;
     }
-
+/*
     // Получение данных заказа
     get order(): IOrder {
         return {
             ...this._buyer,
             total: this.basketModel.getTotal(), // Получаем актуальную сумму
-            items: Array.from(this.basketModel.getItems().values()) // Преобразуем Map в массив
-        };
-    }
+            items: Array.from(this.basketModel.getItems().keys()) // Преобразуем Map в массив
+           /* items: Array.from(this.basketModel.getItems().values()) // Преобразуем Map в массиd*/
+        
 
 
        
@@ -131,6 +131,7 @@ this.basketModel = basketModel;
         this.formErrors = {};
         this.events.emit('buyer:data:cleared');
     }
+
 }
 /*export class BuyerModel implements IBuyerModel {
     // Данные, введенные покупателем
@@ -492,5 +493,14 @@ clear(): void {
         };
     }
 */
+    /*
+    // Получение данных заказа
+    get order(): IOrder {
+        return {
+            ...this._buyer,
+            total: this.basketModel.getTotal(), // Получаем актуальную сумму
+            items: Array.from(this.basketModel.getItems().keys()) // Преобразуем Map в массив
+            items: Array.from(this.basketModel.getItems().values()) // Преобразуем Map в массив*/
+        
     
 
