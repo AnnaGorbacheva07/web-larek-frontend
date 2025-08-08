@@ -44,6 +44,8 @@ set title(value: string) {
 	}
     set price(value: number | null) {
 		this.setText(this._price, value ? `${value} синапсов` : 'Бесценно');
+		if (this._button && !value) {
+			this.setDisabled(this._button, true);
 		}
 	}
- 
+}

@@ -14,16 +14,15 @@ export class FormContacts extends Form<IFormContactsData> implements IForm {
 		this._phoneInput = this.container.querySelector('input[name="phone"]');
 	}
 
-	/**
-	 * Установить email
-	 */
+	
+	 // Установить email
+	 
 	set email(value: string) {
 		this._emailInput.value = value;
 	}
 
-	/**
-	 * Установить телефон
-	 */
+	// Установить телефон
+	 
 	set phone(value: string) {
 		this._phoneInput.value = value;
 	}

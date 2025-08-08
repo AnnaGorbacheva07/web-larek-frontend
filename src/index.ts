@@ -197,41 +197,34 @@ events.on('order:open', () => {
 	});
 });
 
-// Обработчик ошибок
-events.on('validation:error', (errors:Partial<IFormOrderData & IFormContactsData>) => {
-	const { payment, address, email, phone } = errors;
-
-	// Для формы заказа
-	orderForm.valid = !payment && !address;
-	orderForm.errors = [payment, address]
-		.filter(Boolean) // Фильтруем пустые значения
-		.filter(error => typeof error === 'string'); // Оставляем только строки
-
-	// Для контактной формы
-	contactsForm.valid = !email && !phone;
-	contactsForm.errors = [phone, email]
-		.filter(Boolean) // Фильтруем пустые значения
-		.filter(error => typeof error === 'string'); // Оставляем только строки
-});
-
 // Обработка событий формы заказа
 events.on(/^order\..*:change/, (data: { field: keyof IFormOrderData; value: string }) => {
-	// Обновляем модель заказа
-	buyerModel.setData(data.field, data.value);
-	const orderValid =
-		!buyerModel.formErrors.payment && !buyerModel.formErrors.address;
-	const orderErrors = Object.values({
-		payment: buyerModel.formErrors.payment,
-		address: buyerModel.formErrors.address,
-	}).filter((e): e is string => Boolean(e));
-	orderForm.render({
-		payment: buyerModel.order.payment,
-		address: buyerModel.order.address,
-		valid: orderValid,
-		errors: orderErrors,
-	});
-
+    // Обновляем модель
+    buyerModel.setData(data.field, data.value as PaymentMethod);
 });
+// Обработка события обновления данных
+events.on('buyer:data:updated', () => {
+	console.log('Обновляем представление');
+        console.log('Текущие ошибки:', buyerModel.formErrors);
+    // Проверяем валидность
+    const orderValid = !buyerModel.formErrors.payment && !buyerModel.formErrors.address;
+    
+    // Собираем ошибки
+    const orderErrors = Object.values({
+        payment: buyerModel.formErrors.payment,
+        address: buyerModel.formErrors.address
+    }).filter((e): e is string => Boolean(e));
+    
+    // Обновляем форму
+    orderForm.render({
+        payment: buyerModel.buyerData.payment,
+        address: buyerModel.buyerData.address,
+        valid: orderValid,
+        errors: orderErrors
+    });
+});
+
+
 
 events.on(
 	/^contacts\..*:change/,
@@ -250,12 +243,29 @@ events.on('order:submit', () => {
 		}),
 	});
 });
+// Обработчик ошибок
+events.on('validation:error', (errors:Partial<IFormOrderData & IFormContactsData>) => {
+	const { payment, address, email, phone } = errors;
+
+	// Для формы заказа
+	orderForm.valid = !payment && !address;
+	orderForm.errors = [payment, address]
+		.filter(Boolean) // Фильтруем пустые значения
+		.filter(error => typeof error === 'string'); // Оставляем только строки
+
+	// Для контактной формы
+	contactsForm.valid = !email && !phone;
+	contactsForm.errors = [phone, email]
+		.filter(Boolean) // Фильтруем пустые значения
+		.filter(error => typeof error === 'string'); // Оставляем только строки
+});
+
 
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
 	// Собираем данные для отправки
 	const order = {
-		...buyerModel.order,
+		...buyerModel.buyerData,
 		total: basketModel.getTotal(),
 		items: Array.from(basketModel.getItems().keys())
 	};

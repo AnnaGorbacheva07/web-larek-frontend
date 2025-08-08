@@ -1,4 +1,4 @@
-import { ICardActions } from "../../types";
+import { CategoryType, ICardActions } from "../../types";
 import { CardProduct } from "./CardProduct";
 
 export class PreviewCard extends CardProduct {
@@ -30,7 +30,32 @@ export class PreviewCard extends CardProduct {
     set button(value: string) {
 		this.setText(this._button, value);
 	}
-    set category(value: string) {
-        this.setText(this._category, value);
-    }
+    set category(value: CategoryType) {
+            this.setText(this._category, value);
+            this.toggleClass(
+                this._category,
+                'card__category_soft',
+                value === 'софт-скил'
+            );
+            this.toggleClass(
+                this._category,
+                'card__category_other',
+                value === 'другое'
+            );
+            this.toggleClass(
+                this._category,
+                'card__category_additional',
+                value === 'дополнительное'
+            );
+            this.toggleClass(
+                this._category,
+                'card__category_button',
+                value === 'кнопка'
+            );
+            this.toggleClass(
+                this._category,
+                'card__category_hard',
+                value === 'хард-скил'
+            );
+        }
 }

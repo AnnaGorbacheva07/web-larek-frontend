@@ -1,6 +1,14 @@
 
 import { EventEmitter } from '../components/base/events';
 //СЛОЙ ДАННЫХ
+// Категории товаров
+export type CategoryType =
+	| 'софт-скил'
+	| 'другое'
+	| 'дополнительное'
+	| 'кнопка'
+	| 'хард-скил';
+
 
 // Описание товара (из API)
 export interface IProduct {
@@ -8,7 +16,7 @@ export interface IProduct {
 	description: string;
 	image: string;
 	title: string;
-	category: string;
+	category: CategoryType;
 	price: number | null;
 }
 //Интерфейс для модели данных 
@@ -22,7 +30,7 @@ export interface IProductsModel {
 }
 
 // Интерфейс для описания покупателя (переделала по видео для исправления в классе заказа(переименован на класс Покупатель))
-export type PaymentMethod = 'cash' | 'online';
+export type PaymentMethod = 'cash' | 'card';
 
 export interface IBuyer {
 	payment: PaymentMethod | null;
@@ -35,7 +43,7 @@ export interface IBuyer {
 export interface IBuyerModel {
     setData(data: keyof IBuyer, value: string | PaymentMethod): void;
     validate(data: Record<keyof IBuyer, string>): boolean;
-  get order(): IOrder;
+  get buyerData(): IBuyer;
     clear(): void;
 	formErrors: FormErrors;
 }
